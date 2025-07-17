@@ -33,7 +33,7 @@ static void expect(Parser *p, TokenType tt, const char *msg) {
 }
 static int get_prec(TokenType op) {
     switch (op) {
-        case T_STAR: case T_SLASH: return 3;
+        case T_STAR: case T_SLASH: case T_MOD: return 3;
         case T_PLUS: case T_MINUS: return 2;
         case T_GT: case T_LT: case T_GTE:
         case T_LTE: case T_EQ: case T_NEQ: return 1;
@@ -120,16 +120,16 @@ static ASTNode *parse_statement(Parser *p) {
         n->as.return_stmt.value = val;
         return n;
     }
-    if (t->type == T_IDENTIFIER && t->text[0]=='$') {
-        Token *name = advance(p);
-        if (match(p, T_ASSIGN)) {
-            ASTNode *v = parse_expression(p, 0);
-            expect(p, T_SEMICOLON, "Expected ';' after assignment");
-            ASTNode *n = ast_node_new(AST_VAR_ASSIGN, name->line, name->column);
-            n->as.var_assign.name = strdup(name->text);
-            n->as.var_assign.value = v;
-            return n;
-        }
+    if (t->type == T_IDENTIFIER && t->text[0]=='$' &&
+        p->pos + 1 < p->count && p->tokens[p->pos + 1].type == T_ASSIGN) {
+        Token *name = advance(p); // consume identifier
+        advance(p); // consume '='
+        ASTNode *v = parse_expression(p, 0);
+        expect(p, T_SEMICOLON, "Expected ';' after assignment");
+        ASTNode *n = ast_node_new(AST_VAR_ASSIGN, name->line, name->column);
+        n->as.var_assign.name = strdup(name->text);
+        n->as.var_assign.value = v;
+        return n;
     }
     ASTNode *expr = parse_expression(p, 0);
     expect(p, T_SEMICOLON, "Expected ';' after expression");
@@ -155,7 +155,8 @@ static ASTNode *parse_primary(Parser *p) {
         n->as.literal.value = atoi(t->text);
         return n;
     }
-    if (match(p, T_IDENTIFIER)) {
+    if (t->type == T_IDENTIFIER || t->type == T_PRINT) {
+        advance(p);
         if (peek(p)->type==T_LPAREN) {
             char *name=strdup(t->text);
             advance(p);
@@ -192,7 +193,7 @@ static ASTNode *parse_expression(Parser *p, int min_prec) {
     while (1) {
         Token *t = peek(p);
         int prec = get_prec(t->type);
-        if (prec < min_prec) break;
+        if (prec == 0 || prec < min_prec) break;
         TokenType op = t->type;
         advance(p);
         ASTNode *rhs = parse_expression(p, prec+1);

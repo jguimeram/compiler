@@ -66,6 +66,7 @@ int run_bytecode(const Bytecode *bc) {
             case OP_SUB:    { int b=pop_(&vm), a=pop_(&vm); push(&vm, a-b); break; }
             case OP_MUL:    { int b=pop_(&vm), a=pop_(&vm); push(&vm, a*b); break; }
             case OP_DIV:    { int b=pop_(&vm), a=pop_(&vm); push(&vm, a/b); break; }
+            case OP_MOD:    { int b=pop_(&vm), a=pop_(&vm); push(&vm, a%b); break; }
             case OP_GT:     { int b=pop_(&vm), a=pop_(&vm); push(&vm, a>b); break; }
             case OP_LT:     { int b=pop_(&vm), a=pop_(&vm); push(&vm, a<b); break; }
             case OP_GTE:    { int b=pop_(&vm), a=pop_(&vm); push(&vm, a>=b); break; }

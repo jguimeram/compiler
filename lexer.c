@@ -71,6 +71,7 @@ Token *lex(const char *source, size_t *out_count) {
             case '-': add_token(&tokens,&count,&capacity,T_MINUS,NULL,line,tok_col); i++;col++;break;
             case '*': add_token(&tokens,&count,&capacity,T_STAR,NULL,line,tok_col); i++;col++;break;
             case '/': add_token(&tokens,&count,&capacity,T_SLASH,NULL,line,tok_col); i++;col++;break;
+            case '%': add_token(&tokens,&count,&capacity,T_MOD,NULL,line,tok_col); i++;col++;break;
             case '>':
                 if (source[i+1]=='=') { add_token(&tokens,&count,&capacity,T_GTE,NULL,line,tok_col); i+=2; col+=2; }
                 else { add_token(&tokens,&count,&capacity,T_GT,NULL,line,tok_col); i++;col++; }

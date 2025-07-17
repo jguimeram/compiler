@@ -152,7 +152,14 @@ static ASTNode *parse_primary(Parser *p) {
     Token *t = peek(p);
     if (match(p, T_NUMBER)) {
         ASTNode *n = ast_node_new(AST_LITERAL, t->line, t->column);
+        n->as.literal.is_string = 0;
         n->as.literal.value = atoi(t->text);
+        return n;
+    }
+    if (match(p, T_STRING)) {
+        ASTNode *n = ast_node_new(AST_LITERAL, t->line, t->column);
+        n->as.literal.is_string = 1;
+        n->as.literal.str = strdup(t->text);
         return n;
     }
     if (t->type == T_IDENTIFIER || t->type == T_PRINT) {

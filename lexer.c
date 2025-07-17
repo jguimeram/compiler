@@ -53,6 +53,19 @@ Token *lex(const char *source, size_t *out_count) {
             add_token(&tokens,&count,&capacity,type,buf,line,tok_col);
             continue;
         }
+        if (c == '"') {
+            char buf[MAX_TOKEN_TEXT] = {0};
+            size_t len = 0;
+            i++; col++; // skip opening quote
+            while (source[i] && source[i] != '"' && len < MAX_TOKEN_TEXT-1) {
+                buf[len++] = source[i++];
+                col++;
+            }
+            if (source[i] == '"') { i++; col++; }
+            buf[len] = '\0';
+            add_token(&tokens, &count, &capacity, T_STRING, buf, line, tok_col);
+            continue;
+        }
         if (isdigit(c)) {
             char buf[MAX_TOKEN_TEXT]={0}; size_t len=0;
             while(isdigit(source[i])&&len<MAX_TOKEN_TEXT-1){ buf[len++]=source[i++]; col++; }

@@ -13,10 +13,15 @@ Bytecode *bytecode_new(void) {
 
 void bytecode_free(Bytecode *bc) {
     free(bc->code);
+    for (size_t i = 0; i < bc->const_count; i++) {
+        if (bc->constants[i].type == VAL_STR) {
+            free(bc->constants[i].str_val);
+        }
+    }
     free(bc);
 }
 
-int bytecode_new_constant(Bytecode *bc, int value) {
+int bytecode_new_constant(Bytecode *bc, Value value) {
     if (bc->const_count >= MAX_CONSTANTS) {
        fprintf(stderr, "Too many constants");
         exit(EXIT_FAILURE);

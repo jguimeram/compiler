@@ -5,7 +5,15 @@
 #include <stdint.h>
 #include <stddef.h> // size_t
 
+
 #define MAX_CONSTANTS 256
+
+typedef enum { VAL_INT, VAL_STR } ValueType;
+
+typedef struct {
+    ValueType type;
+    union { int int_val; char *str_val; };
+} Value;
 
 typedef enum {
     OP_CONSTANT,
@@ -33,13 +41,13 @@ typedef enum {
 typedef struct {
     uint8_t *code;
     size_t code_size;
-    int constants[MAX_CONSTANTS];
+    Value constants[MAX_CONSTANTS];
     size_t const_count;
 } Bytecode;
 
 Bytecode *bytecode_new(void);
 void bytecode_free(Bytecode *bc);
-int bytecode_new_constant(Bytecode *bc, int value);
+int bytecode_new_constant(Bytecode *bc, Value value);
 void emit_byte(Bytecode *bc, uint8_t byte);
 void emit_op_const(Bytecode *bc, OpCode op, uint8_t const_index);
 

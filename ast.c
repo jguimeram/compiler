@@ -75,6 +75,9 @@ void free_ast(ASTNode *node) {
             free_ast(node->as.binary.right);
             break;
         case AST_LITERAL:
+            if (node->as.literal.is_string) {
+                free(node->as.literal.str);
+            }
             break;
         case AST_VAR_REF:
             free(node->as.var_ref.name);

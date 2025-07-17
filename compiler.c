@@ -32,7 +32,8 @@ static void compile_statement(ASTNode *stmt, Bytecode *bc) {
             break;
         case AST_VAR_ASSIGN: {
             compile_expression(stmt->as.var_assign.value, bc);
-            int idx = bytecode_new_constant(bc, (intptr_t)strdup(stmt->as.var_assign.name));
+            Value v = { .type = VAL_STR, .str_val = strdup(stmt->as.var_assign.name) };
+            int idx = bytecode_new_constant(bc, v);
             emit_op_const(bc, OP_STORE, (uint8_t)idx);
             break;
         }
@@ -60,7 +61,7 @@ static void compile_statement(ASTNode *stmt, Bytecode *bc) {
             emit_byte(bc, 0);
             compile_block(stmt->as.while_stmt.body, bc);
             emit_byte(bc, OP_JMP);
-            emit_byte(bc, (uint8_t)(loopStart - (bc->code_size + 2)));
+            emit_byte(bc, (uint8_t)(loopStart - (bc->code_size + 1)));
             bc->code[exitJump+1] = (uint8_t)(bc->code_size - (exitJump + 2));
             break;
         }
@@ -84,13 +85,21 @@ static void compile_block(ASTNode *block, Bytecode *bc) {
 static void compile_expression(ASTNode *expr, Bytecode *bc) {
     switch (expr->type) {
         case AST_LITERAL: {
-            int val = expr->as.literal.value;
-            int idx = bytecode_new_constant(bc, val);
+            Value v;
+            if (expr->as.literal.is_string) {
+                v.type = VAL_STR;
+                v.str_val = strdup(expr->as.literal.str);
+            } else {
+                v.type = VAL_INT;
+                v.int_val = expr->as.literal.value;
+            }
+            int idx = bytecode_new_constant(bc, v);
             emit_op_const(bc, OP_CONSTANT, (uint8_t)idx);
             break;
         }
         case AST_VAR_REF: {
-            int idx = bytecode_new_constant(bc, (intptr_t)strdup(expr->as.var_ref.name));
+            Value v = { .type = VAL_STR, .str_val = strdup(expr->as.var_ref.name) };
+            int idx = bytecode_new_constant(bc, v);
             emit_op_const(bc, OP_LOAD, (uint8_t)idx);
             break;
         }

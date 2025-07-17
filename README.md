@@ -41,3 +41,7 @@ make phpc
 ```bash
 ./bin/phpc example.phpc
 ```
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).

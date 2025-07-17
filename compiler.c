@@ -102,6 +102,7 @@ static void compile_expression(ASTNode *expr, Bytecode *bc) {
                 case T_MINUS: emit_byte(bc, OP_SUB); break;
                 case T_STAR:  emit_byte(bc, OP_MUL); break;
                 case T_SLASH: emit_byte(bc, OP_DIV); break;
+                case T_MOD:   emit_byte(bc, OP_MOD); break;
                 case T_GT:    emit_byte(bc, OP_GT);  break;
                 case T_LT:    emit_byte(bc, OP_LT);  break;
                 case T_GTE:   emit_byte(bc, OP_GTE); break;

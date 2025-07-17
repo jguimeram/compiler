@@ -33,6 +33,7 @@ typedef enum {
     T_MINUS,    // -
     T_STAR,     // *
     T_SLASH,    // /
+    T_MOD,      // %
     T_ASSIGN,   // =
     T_GT,       // >
     T_LT,       // <

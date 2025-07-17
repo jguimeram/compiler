@@ -44,7 +44,8 @@ typedef enum {
 
     // Identifiers and literals
     T_IDENTIFIER, // variable or function names (e.g., $x, foo)
-    T_NUMBER      // numeric literals (e.g., 123)
+    T_NUMBER,     // numeric literals (e.g., 123)
+    T_STRING      // string literals (e.g., "hello")
 } TokenType;
 
 typedef struct {

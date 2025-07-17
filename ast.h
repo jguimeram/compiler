@@ -38,7 +38,7 @@ typedef struct ASTNode {
         struct { char *name; char **params; size_t param_count; struct ASTNode *body; } func_def;
         struct { ASTNodeList *statements; } block;
         struct { TokenType op; struct ASTNode *left, *right; } binary;
-        struct { int value; } literal;
+        struct { int is_string; int value; char *str; } literal;
         struct { char *name; } var_ref;
         struct { char *name; struct ASTNode **args; size_t arg_count; } func_call;
     } as;

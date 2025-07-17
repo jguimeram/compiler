@@ -68,7 +68,6 @@ static ASTNode *parse_program(Parser *p) {
                 } while(match(p, T_COMMA));
                 expect(p, T_RPAREN, "Expected ')' after params");
             }
-            expect(p, T_LBRACE, "Expected '{' before function body");
             ASTNode *body = parse_block(p);
             ASTNode *fn = ast_node_new(AST_FUNCTION, name->line, name->column);
             fn->as.func_def.name = strdup(name->text);
@@ -177,7 +176,6 @@ static ASTNode *parse_primary(Parser *p) {
         }
         ASTNode *n = ast_node_new(AST_VAR_REF, t->line, t->column);
         n->as.var_ref.name = strdup(t->text);
-        advance(p);
         return n;
     }
     if (match(p, T_LPAREN)) {

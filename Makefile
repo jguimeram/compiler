@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -std=c99 -Wall -Wextra -I.
+CFLAGS = -std=c99 -Wall -Wextra -g -I.
 SRC = main.c lexer.c parser.c ast.c compiler.c bytecode.c vm.c
 OBJ = $(SRC:.c=.o)
 
